@@ -70,22 +70,31 @@ router.post('/:userid/tasks', function (req, res) {
     })
 });
 
-/* Submit weekly timesheet */
+/* Submit daily timesheet */
 router.post('/:userid/submit', function (req, res) {
     models.User.findById(req.params.userid, {
         include: [models.Timewatch, models.Task]
     }).then(function (user) {
+        var today = new Date();
         var tasks = user.Tasks;
         var creds = user.Timewatch;
-        console.log(creds.email);
-        console.log(creds.password);
-        Promise.map(tasks, function (task) {
-            return timewatch.run(
-                creds.email, creds.password, task.cost_code, task.analysis_code, task.hours_per_day);
-        }, {concurrency: 1}).then(function () {
-            res.send('success!')
-        }).catch(function (err) {
-            res.status(400).json(err);
+        var task = tasks[0];
+        // Promise.map(tasks, function (task) {
+        //     return timewatch.run(
+        //         creds.email, creds.password, task.cost_code, task.analysis_code, task.hours_per_day, today
+        //     )
+        // }, {concurrency: 1}).then(function () {
+        //     res.send('success!')
+        // }).catch(function (err) {
+        //     res.status(400).send(err)
+        // })
+        console.log(task)
+        timewatch.run(
+            creds.email, creds.password, task.cost_code, task.analysis_code, task.hours_per_day, today
+        ).then(function() {
+            res.send('whoop')
+        }).catch(function(err) {
+            res.status(400).send(err)
         })
     })
 });
