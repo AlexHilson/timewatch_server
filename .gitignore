@@ -1,5 +1,8 @@
 .idea/*
 
 ./app/node_modules/*
+./app/npm-debug.log
 
 *.sqlite
+
+*.terraform*
