@@ -88,7 +88,6 @@ router.post('/:userid/submit', function (req, res) {
         // }).catch(function (err) {
         //     res.status(400).send(err)
         // })
-        console.log(task)
         timewatch.run(
             creds.email, creds.password, task.cost_code, task.analysis_code, task.hours_per_day, today
         ).then(function() {

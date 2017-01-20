@@ -8,7 +8,7 @@ var timewatchLogin = function (username, password) {
             .type('input[name="LoginNameTxtBox"]', username)
             .type('input[name="PasswordTxtBox"]', password)
             .click('input[name="LoginBtn"]')
-            .wait(4000)
+            .wait(7000)
     };
 };
 
@@ -27,26 +27,32 @@ var logTime = function (costCode, analysisCode, timePerDay, date) {
     };
 };
 
-var submitTime = function (date) {
+var submitTime = function () {
     return function (nightmare) {
-        console.log('submitting them timesheets');
-        nightmare.evaluate(function (date) {
+        nightmare.evaluate(function () {
+            /* We should be able to pass a date in here, but for now we
+            can only submit for the current day. This will also submit all days prior,
+            so it's not really a big deal. */
+            var date = Date();
             var frame = document.getElementById("ifrmTimesheet").contentWindow;
-            frame.SubmitTime('2017/01/19');
+            frame.SubmitTime(date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDay());
         });
     };
 };
 
+/*
+Separating 'submit' and 'log' is causing Timewatch to unpublish days. Until
+I can work this out we need to log + submit all in one go, limiting us to
+a single job per day.
+*/
 module.exports.run = function (email, password, cost_code, analysis_code, hours, date) {
-    console.log('pre promise')
     return new Promise(function (resolve, reject) {
-        var nightmare = Nightmare({typeInterval: 50, show: true});
-        console.log(nightmare)
+        var nightmare = Nightmare({typeInterval: 50});
         nightmare
             .use(timewatchLogin(email, password))
             .use(logTime(cost_code, analysis_code, '7.5', date))
-            .use(submitTime('2017/01/19'))
-            .wait(2000)
+            .use(submitTime())
+            .wait(1000)
             .end()
             .then(function() {
                 resolve();
@@ -60,9 +66,8 @@ module.exports.run = function (email, password, cost_code, analysis_code, hours,
 
 module.exports.submit = function (email, password, date) {
     return new Promise(function (resolve, reject) {
-        var nightmare = Nightmare({typeInterval: 50, show: true});
+        var nightmare = Nightmare({typeInterval: 50});
         var submit_date = date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDay();
-        console.log(submit_date)
         nightmare
             .use(timewatchLogin(email, password))
             .evaluate(function (submit_date) {
@@ -82,7 +87,7 @@ module.exports.submit = function (email, password, date) {
 
 module.exports.log = function (email, password, cost_code, analysis_code, hours, date) {
     return new Promise(function (resolve, reject) {
-        var nightmare = Nightmare({typeInterval: 50, show: true});
+        var nightmare = Nightmare({typeInterval: 50});
         nightmare
             .use(timewatchLogin(email, password))
             .use(logTime(cost_code, analysis_code, hours, date))
