@@ -26,7 +26,7 @@ sudo apt-get install -y xvfb \
 sudo npm install -g electron
 
 cd ~
-wget https://github.com/AlexHilson/timewatch_server/archive/v0.0.1.tar.gz -O timewatch_server.tar.gz
+wget https://github.com/AlexHilson/timewatch_server/archive/v0.0.3.tar.gz -O timewatch_server.tar.gz
 tar zxf timewatch_server.tar.gz
 
 cd timewatch_server-0.0.1/app
