@@ -88,7 +88,7 @@ router.post('/:userid/submit', function (req, res) {
         // }).catch(function (err) {
         //     res.status(400).send(err)
         // })
-        timewatch.run(
+        timewatch.submitDay(
             creds.email, creds.password, task.cost_code, task.analysis_code, task.hours_per_day, today
         ).then(function() {
             res.send('whoop')

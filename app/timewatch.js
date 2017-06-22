@@ -23,6 +23,7 @@ var logTime = function (costCode, analysisCode, timePerDay, date) {
             .type('input[id="txtsabNewLineStage"]', analysisCode + '\u000d')
             .type(input_box, timePerDay + '\u000d')
             .click('input[id="btnSaveNew"]')
+            .screenshot('./postlog.png')
             .resetFrame()
     };
 };
@@ -33,9 +34,10 @@ var submitTime = function () {
             /* We should be able to pass a date in here, but for now we
             can only submit for the current day. This will also submit all days prior,
             so it's not really a big deal. */
-            var date = Date();
+            var date = new Date();
             var frame = document.getElementById("ifrmTimesheet").contentWindow;
-            frame.SubmitTime(date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDay());
+            console.warn(date)
+            frame.SubmitTime(date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate());
         });
     };
 };
